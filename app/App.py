@@ -1,7 +1,5 @@
 import os
-
-from PyQt5.QtWidgets import QWidget, QPushButton, QLabel, QVBoxLayout, QInputDialog, QMessageBox
-
+from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QVBoxLayout, QInputDialog, QMessageBox
 from config import db_loc
 from dialogs.DatabaseMenu import DatabaseMenu
 
@@ -86,4 +84,4 @@ class PasswordManagerApp(QWidget):
 
     def show_db_menu(self):
         db_menu = DatabaseMenu(self.current_db, self.passwords)
-        db_menu.exec_()
+        db_menu.exec()

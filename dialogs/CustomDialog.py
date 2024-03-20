@@ -1,11 +1,11 @@
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QLabel, QHBoxLayout, QPushButton
+from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QLabel, QHBoxLayout, QPushButton
 
 
-class AddPasswordDialog(QDialog):
+class PasswordEntryDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.setWindowTitle('Add Password')
+        self.setWindowTitle('Password Entry Dialog')
         self.setGeometry(200, 200, 400, 200)
 
         layout = QVBoxLayout()

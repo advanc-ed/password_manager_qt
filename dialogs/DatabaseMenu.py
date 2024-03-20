@@ -1,8 +1,6 @@
 import os
-
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton, QMessageBox, QInputDialog
-
-from dialogs.CustomDialog import AddPasswordDialog
+from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton, QMessageBox, QInputDialog
+from dialogs.CustomDialog import PasswordEntryDialog
 
 
 class DatabaseMenu(QDialog):
@@ -58,14 +56,19 @@ class DatabaseMenu(QDialog):
                                     f'Password: {password}\n' +
                                     f'Note: {note}')
 
+    def read_password_from_user(self):
+        dialog = PasswordEntryDialog(self)
+        if dialog.exec():
+            return dialog.get_data()
+
+        return None
+
     def add_password(self):
-        dialog = AddPasswordDialog(self)
-        if dialog.exec_():
-            username, password, label, note = dialog.get_data()
-            if username and password and label and note:
-                self.passwords[label] = (username, password, note)
-                self.save_passwords()
-                QMessageBox.information(self, 'Success', 'Password added.')
+        username, password, label, note = self.read_password_from_user()
+        if username and password and label and note:
+            self.passwords[label] = (username, password, note)
+            self.save_passwords()
+            QMessageBox.information(self, 'Success', 'Password added.')
 
     def delete_password(self):
         if not self.passwords:
@@ -89,15 +92,12 @@ class DatabaseMenu(QDialog):
         selected_label, ok = QInputDialog.getItem(self, 'Update Password', 'Choose a password label to update:',
                                                   password_labels, 0, False)
         if ok and selected_label:
-            username, ok = QInputDialog.getText(self, 'Update Password', 'Enter the new username:')
-            if ok and username:
-                password, ok = QInputDialog.getText(self, 'Update Password', 'Enter the new password:')
-                if ok and password:
-                    note, ok = QInputDialog.getText(self, 'Update Note', 'Enter the new Note:')
-                    if ok and note:
-                        self.passwords[selected_label] = (username, password, note)
-                        self.save_passwords()
-                        QMessageBox.information(self, 'Success', 'Password updated.')
+            username, password, label, note = self.read_password_from_user()
+            if username and password and label and note:
+                self.passwords.pop(selected_label)
+                self.passwords[label] = (username, password, note)
+                self.save_passwords()
+                QMessageBox.information(self, 'Success', 'Password updated.')
 
     def save_passwords(self):
         with open(os.path.join('db', self.db_name), 'w') as file:
