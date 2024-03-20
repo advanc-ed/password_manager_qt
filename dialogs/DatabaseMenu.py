@@ -1,20 +1,24 @@
 import os
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton, QMessageBox, QInputDialog
-from dialogs.CustomDialog import PasswordEntryDialog
+from dialogs.CustomDialog import PasswordEntryDialog  
 
 
 class DatabaseMenu(QDialog):
+    """Dialog for managing passwords in a database."""
     def __init__(self, db_name, passwords):
         super().__init__()
 
+        # Initialize attributes
         self.db_name = db_name
         self.passwords = passwords
 
+        # Set dialog properties
         self.setWindowTitle(f'Password Manager | {db_name}')
         self.setGeometry(200, 200, 400, 300)
 
-        layout = QVBoxLayout()
+        layout = QVBoxLayout()  # Create a vertical layout for widgets
 
+        # Add widgets to layout
         label = QLabel('Main Menu')
         layout.addWidget(label)
 
@@ -38,9 +42,10 @@ class DatabaseMenu(QDialog):
         exit_button.clicked.connect(self.close)
         layout.addWidget(exit_button)
 
-        self.setLayout(layout)
+        self.setLayout(layout)  # Set layout for the dialog
 
     def show_passwords(self):
+        """Display existing passwords."""
         if not self.passwords:
             QMessageBox.information(self, 'Info', 'No passwords stored in this database.')
             return
@@ -57,6 +62,7 @@ class DatabaseMenu(QDialog):
                                     f'Note: {note}')
 
     def read_password_from_user(self):
+        """Read new password information from user."""
         dialog = PasswordEntryDialog(self)
         if dialog.exec():
             return dialog.get_data()
@@ -64,6 +70,7 @@ class DatabaseMenu(QDialog):
         return None
 
     def add_password(self):
+        """Add a new password."""
         username, password, label, note = self.read_password_from_user()
         if username and password and label and note:
             self.passwords[label] = (username, password, note)
@@ -71,6 +78,7 @@ class DatabaseMenu(QDialog):
             QMessageBox.information(self, 'Success', 'Password added.')
 
     def delete_password(self):
+        """Delete an existing password."""
         if not self.passwords:
             QMessageBox.information(self, 'Info', 'No passwords stored in this database.')
             return
@@ -84,6 +92,7 @@ class DatabaseMenu(QDialog):
             QMessageBox.information(self, 'Success', 'Password deleted.')
 
     def update_password(self):
+        """Update an existing password."""
         if not self.passwords:
             QMessageBox.information(self, 'Info', 'No passwords stored in this database.')
             return
@@ -100,6 +109,7 @@ class DatabaseMenu(QDialog):
                 QMessageBox.information(self, 'Success', 'Password updated.')
 
     def save_passwords(self):
+        """Save passwords to the database file."""
         with open(os.path.join('db', self.db_name), 'w') as file:
             for label, (username, password, note) in self.passwords.items():
                 file.write(f'{username}:{password}:{label}:{note}\n')
